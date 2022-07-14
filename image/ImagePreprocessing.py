@@ -9,6 +9,7 @@ import os
 import cv2
 import glob
 import logging
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -67,8 +68,24 @@ def noise_reduction(image_path, ext, gray=False, output=None, h=2, hcolor=2, tem
         for image in glob.glob('*.' + ext):
             img = cv2.imread(os.path.join(image_path, image))
             if gray:
-                dst = cv2.fastNlMeansDenoising(img, output, h, templateWindowSize, searchWindowSize)
+                return cv2.fastNlMeansDenoising(img, output, h, templateWindowSize, searchWindowSize)
             else:
-                dst = cv2.fastNlMeansDenoisingColored(img, output, h, hcolor, templateWindowSize, searchWindowSize)
+                return cv2.fastNlMeansDenoisingColored(img, output, h, hcolor, templateWindowSize, searchWindowSize)
     except TypeError:
         logging.error('Invalid gievn data')
+        
+def crop_image(image, dim=(64,128)):
+    (h, w) = image.shape
+    
+    if h > dim[0]:
+        image = image[:dim[0], :]
+    
+    if w > dim[1]:
+        image = image[:, :dim[1]]
+    
+    # create white blank image
+    new_img = np.ones(dim)*255 
+    # fill the array to new image
+    new_img[:h, :w] = image 
+    
+    return new_img
