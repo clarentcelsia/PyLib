@@ -43,7 +43,7 @@ def binarize(image_path, ext, thresh, maxval, binary, save=False, save_dir=None)
     try:
         os.chdir(image_path)
         for image in glob.glob('*.' + ext):
-            img = cv2.imread(os.path.join(image_path, image))
+            img = cv2.imread(os.path.join(image_path, image), cv2.IMREAD_GRAYSCALE)
             img = cv2.threshold(img, thresh, maxval, binary)
             
             if save:
